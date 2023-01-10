@@ -1,0 +1,48 @@
+<h1>Productos</h1>
+
+{{#if producto  }} 
+<table class="table">
+    
+        <thead>
+          <tr>
+            <th scope="col">Id</th>
+            <th scope="col">TimeStamp</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Descripción</th>
+            <th scope="col">Código</th>
+            <th scope="col">Thumbnail</th>
+            <th scope="col">Precio</th>
+            <th scope="col">Stock</th>
+
+            
+          </tr>
+        </thead>
+        <tbody id="tbody">
+           
+            {{#each producto}}
+                <tr>
+                    <th scope="row">{{id}}</th>
+                    <td>{{timestamp}}</td>
+                    <td>{{nombre}}</td>
+                    <td>{{description}}</td>
+                    <td>{{codigo}}</td>
+                    <td><img src="{{thumbnail}}" style="width: 30px" alt="">  </td>
+                    <td>{{price}}</td>
+                    <td>{{stock}}</td>
+                </tr>
+            {{/each}}
+        </tbody>
+        
+    </table>
+
+    
+{{else}}
+    <h2>No hay productos</h2>
+
+{{/if}}
+
+    <a href="../../" class="btn btn-primary mx-auto w-25">Ingresar Producto</a>
+     <form action="/api/carrito" method="POST">
+        <button type="submit" class="btn btn-primary mx-auto w-25">Crear Carrito</button>
+    </form>
+    

@@ -1,0 +1,42 @@
+ <div >   
+        <center>
+            <h2 >Ingrese Producto</h2>
+        </center>
+        
+        <form action="/api/productos" class="container" method="POST">
+        
+
+            <div class="row">
+                Nombre: <input type="text" name="nombre">
+            </div>
+             <div class="row">
+                Descripción: <input type="text" name="description">
+            </div>
+            <div class="row">
+                Código: <input type="text" name="codigo">
+            </div>
+            <div class="row">
+                URL imagen: <input type="text" name="thumbnail">
+            </div>
+            <div class="row">
+                Precio: <input type="number" name="price">
+            </div>
+            <div class="row">
+                Stock: <input type="number" name="stock">
+            </div>
+
+            
+            <div class="row mt-5" >
+                <button class="btn btn-primary mx-auto w-25" type="submit">Enviar</button>
+            </div>
+        
+            
+            
+            
+        </form>
+        <div class="row mt-5" >
+                <a href="./api/productos" class="btn btn-primary mx-auto w-25" to="/api/productos">Productos</a>
+        </div>
+
+    </div>
+    

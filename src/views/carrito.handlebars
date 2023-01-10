@@ -1,0 +1,58 @@
+<h1>Carrito {{idCarrito}}</h1>
+
+<form action="/api/carrito/{{idCarrito}}/productos" class="container" method="POST">
+        
+
+            <div class="row">
+                Id: <input type="number" name="id">
+            </div>
+
+            
+            <div class="row mt-5" >
+                <button class="btn btn-primary mx-auto w-25" type="submit">Enviar</button>
+            </div>
+        
+
+{{#if carrito  }} 
+<table class="table">
+    
+        <thead>
+          <tr>
+            <th scope="col">Id</th>
+            <th scope="col">TimeStamp</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Descripción</th>
+            <th scope="col">Código</th>
+            <th scope="col">Thumbnail</th>
+            <th scope="col">Precio</th>
+            <th scope="col">Stock</th>
+
+            
+          </tr>
+        </thead>
+        <tbody id="tbody">
+           
+            {{#each carrito}}
+                <tr>
+                    <th scope="row">{{id}}</th>
+                    <td>{{timestamp}}</td>
+                    <td>{{nombre}}</td>
+                    <td>{{description}}</td>
+                    <td>{{codigo}}</td>
+                    <td><img src="{{thumbnail}}" style="width: 30px" alt="">  </td>
+                    <td>{{price}}</td>
+                    <td>{{stock}}</td>
+                </tr>
+            {{/each}}
+        </tbody>
+        
+    </table>
+
+    
+{{else}}
+    <h2>Carrito vacio</h2>
+
+{{/if}}
+
+   
+    
