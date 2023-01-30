@@ -1,16 +1,16 @@
-import mongoose from "mongoose";
 
-import Producto from '../model/productSchema.js';
+
+
 
 
 
 class ContainerMongoDb {
-    constructor(name){    
+    constructor(object){    
         
-        this.name = name  
+        this.name = object.name
+        this.model = object.model  
         
-        
-        
+    
 
     }
 
@@ -20,9 +20,9 @@ class ContainerMongoDb {
         
             try{            
             
-                const newProducto = new Producto(object)
-                console.log(newProducto)
-                return newProducto.save()
+                const newItem = new this.model(object)
+                
+                return newItem.save()
     
                 
             }
@@ -37,27 +37,59 @@ class ContainerMongoDb {
 
         
     
+        async add(idCart, idProd, model){
+            // add(Object): Number - Recibe un objeto, lo guarda en la base de datos enviada
+            
+            
+                try{       
+                    console.log("id Cart: " + idCart)
+                    console.log("id Prod: " + idProd)     
+                    const productToAdd= await model.findOne({_id: idProd})
+                        .then((product)=>{
+                            return product
+                            
+
+                            
+                        })
+                    await this.model.updateOne({_id: idCart}, {$addToSet: {productos: productToAdd}})
+                    
+                    
+                    
+        
+                    
+                }
+                catch (err){
+                    console.log(err)
+                }
+            }
+            
+                    
+    
+           
+    
+            
+        
     async getById(id){
         // getById(Number): Object - Recibe un id y devuelve el objeto con ese id, o null si no está.
      
-       let productToSend
+       let ItemToSend
         try{
-            if(this.type==="productos"){
-                productToSend  = await Producto.find({_id: id})
+            
+            ItemToSend  = await this.model.findOne({_id: id})
+                .then((value)=> {
+                    
+                    if(value){
+                        return value
+                    } else {
+                        return null
+                    }
+                    
+                })   
                 
-            }
-            if(this.type==="carritos"){
-                
-                const carrito = await Carrito.find({name: this.name})                        
-                    .then((value)=>{
-                        
-                       productToSend =  value[0].productos.find(element => element._id == id)
-                       
-                       
-                    })
-      
-            }
-            return productToSend
+            return ItemToSend
+            
+           
+           
                      
 
         }
@@ -77,21 +109,8 @@ class ContainerMongoDb {
         
         
         try{
-            if(this.type==="productos"){
-                listado  = await Producto.find()
-                
-            }
-            if(this.type==="carritos"){
-                
-                const carrito = await Carrito.find({name: this.name})                        
-                    .then((value)=>{
-                        
-                       listado =  value[0].productos
-                       
-                       
-                    })
-      
-            }
+            listado = await this.model.find()
+            
             return listado
                      
 
@@ -106,46 +125,30 @@ class ContainerMongoDb {
         
                         
     }
+    async deleteByIdbyId(idCart, idProd, model){
+        // deleteById(Number): void - Elimina del archivo el objeto con el id buscado.
+        try{
+            const productToDelete = await model.findOne({id: idProd})
+                .then((value)=>this.model.findOneAndUpdate({id: idCart}, {$pull: {productos: value}}))
+            
+            
+
+            
+        }
+    
+        catch (err){
+            console.log(err)
+    
+        }
+    }
     async deleteById(id){
         // deleteById(Number): void - Elimina del archivo el objeto con el id buscado.
         try{
-            if(this.type==="productos"){
-                productToDelete  = await Producto.deleteOne({_id: id})
-                
-            }
-            if(this.type==="carritos"){
-                let productosFiltrados
-                const carrito = await Carrito.find({name: this.name})                       
-                    .then((value)=>{
-                        console.log(value)
-                       return value
-                       
-                       
-                    })
-                    
-                    .then((value)=>{
-                        const idLiteral = `new ObjectId("${id}")`
-                        
-                        const productos = value[0].productos
-                        console.log(productos)
-                        productosFiltrados = productos.filter(element => element._id != id)
-                        
-    
-                        
-                    })
-                    
-                 Carrito.updateOne({name: this.name}, {$set: {productos: value}})
-                    
-                
-                
-    
-            }
-       
+            await this.model.findOneAndDelete({_id: id})              
+             
+        
         }
-       
-            
-            
-  
+    
         catch (err){
             console.log(err)
     
@@ -154,10 +157,7 @@ class ContainerMongoDb {
     async deleteAll(){
         // deleteAll(): void - Elimina todos los objetos presentes en el archivo.
         try{
-            if(this.type==="productos"){
-                listado  = await Producto.deleteMany({})
-                
-            } 
+            await this.model.deleteMany({})
         }
         catch (err){
             console.log(err)

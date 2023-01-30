@@ -1,6 +1,5 @@
 
-import { appendFile } from "fs";
-import connectToDb from "../../config/mongoDbConfig.js";
+
 
 
 import ContainerMongoDb from '../../containers/ContainerMongoDb.js';
@@ -10,8 +9,8 @@ import ContainerMongoDb from '../../containers/ContainerMongoDb.js';
 
 class CarritosDaoMongoDb extends ContainerMongoDb {
 
-    constructor(object) {
-        super(object)
+    constructor(name, model) {
+        super(name, model)
     }
 
     
