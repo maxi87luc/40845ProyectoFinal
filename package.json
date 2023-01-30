@@ -1,7 +1,6 @@
 {
   "name": "proyectofinal",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,8 +11,21 @@
   "dependencies": {
     "express": "^4.18.2",
     "express-handlebars": "^6.0.6",
+    "firebase": "^9.16.0",
     "fs": "^0.0.1-security",
     "handlebars": "^4.7.7",
+    "mongodb": "^4.13.0",
+    "mongoose": "^6.9.0",
     "router": "^1.3.7"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maxi87luc/40845ProyectoFinal.git"
+  },
+  "bugs": {
+    "url": "https://github.com/maxi87luc/40845ProyectoFinal/issues"
+  },
+  "homepage": "https://github.com/maxi87luc/40845ProyectoFinal#readme",
+  "description": "",
+  "type": "module"
 }
