@@ -10,7 +10,8 @@ export const signinPassport = passport.authenticate('signup', { failureRedirect:
 
 
 export const signin = (req, res, next)=>{ 
-    console.log(req.body)
+    console.log(req.file)
+
     req.session.username = req.user.username
     const user = {
         username: req.body.username,

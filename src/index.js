@@ -84,14 +84,17 @@ rootRouter.get('/signin', (req, res)=>{
 
 rootRouter.post('/signin', signinPassport, signin)
 
-rootRouter.get('/test', (req, res)=>{
-    const mensaje = "Alto gato sos"
-    res.render('index', {mensaje: mensaje})
-})
+
 
 
 
 //Carrito Router------------------------------
+
+carritoRouter.get('/',(req, res)=>{
+    const filePath = path.resolve('./public/apsignin.html');
+    res.sendFile(filePath);
+})
+
 
 //Agrega un carrito y retorna el id
 carritoRouter.post('/', (req, res) => {
@@ -102,7 +105,7 @@ carritoRouter.post('/', (req, res) => {
 
     
 
-    
+    res.redirect('../../')
     
 })
 
