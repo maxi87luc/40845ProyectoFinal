@@ -2,9 +2,20 @@ import express from 'express';
 import mongoose from "mongoose";
 import CarritosDaoMongoDb from './daos/carritos/CarritosDaoMongoDb.js';
 import ProductosDaoMongoDb from './daos/productos/ProductosDaoMongoDb.js';
+
 import connectToDb from './config/mongoDbConfig.js';
 import Producto from './model/productSchema.js'
 import Carrito from './model/carritoSchema.js'
+import User from './model/userSchema.js'
+import path from 'path'
+import passport from 'passport'
+import './config/passport.js'
+import {signin, signinPassport} from './routes/signin.js'
+import expressSession from 'express-session'
+import MongoStore from 'connect-mongo'
+import {mongoURL, mongoSecret} from './config/enviroment.js'
+
+
 
 const { Router } = express;
 
@@ -16,7 +27,20 @@ connectToDb().then(()=>console.log("OK"))
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 
+app.set('view engine', 'ejs');
+
 app.use(express.json())
+
+app.use(expressSession({
+    store: MongoStore.create({ mongoUrl: mongoURL }),
+    secret: mongoSecret,
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 60000
+    }
+}));
+
 const productosRouter = Router();
 const carritoRouter = Router();
 const rootRouter = Router();
@@ -27,6 +51,45 @@ const carrito = new CarritosDaoMongoDb({name: "carrito", model: Carrito})
 
 //Creo una instancia de contenedor de Productos
 const productos = new ProductosDaoMongoDb({name: "productos", model: Producto})
+
+
+
+
+//Root Router --------------------------------
+
+rootRouter.get('/', (req, res)=>{
+    const filePath = path.resolve('./public/index.html');
+    res.sendFile(filePath);
+})
+
+rootRouter.get('/login', (req, res)=>{
+
+    const filePath = path.resolve('./public/login.html');
+    res.sendFile(filePath);
+})
+
+rootRouter.post('/login', (req, res)=>{
+    console.log(req.body)
+    
+    
+    res.redirect('../')
+})
+
+rootRouter.get('/signin', (req, res)=>{
+
+    const filePath = path.resolve('./public/signin.html');
+    res.sendFile(filePath);
+})
+
+
+rootRouter.post('/signin', signinPassport, signin)
+
+rootRouter.get('/test', (req, res)=>{
+    const mensaje = "Alto gato sos"
+    res.render('index', {mensaje: mensaje})
+})
+
+
 
 //Carrito Router------------------------------
 
