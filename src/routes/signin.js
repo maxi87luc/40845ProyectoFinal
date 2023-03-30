@@ -1,17 +1,18 @@
 import passport from 'passport'
 import UsersDaoMongoDb from '../daos/users/UsersDaoMongoDb.js';
 import User from '../model/userSchema.js'
+import {enviarMensajeWhatsapp} from '../helpers/sendMessages.js'
+import {enviarCorreo} from '../helpers/nodemailer.js'
 
-console.log("it´s alive")
 //Creo una instancia de contenedor de Productos
-const users = new UsersDaoMongoDb({name: "productos", model: User})
+export const users = new UsersDaoMongoDb({name: "productos", model: User})
 
 export const signinPassport = passport.authenticate('signup', { failureRedirect: '../signin-error' })
 
 
 export const signin = (req, res, next)=>{ 
-    console.log(req.file)
-
+    
+   
     req.session.username = req.user.username
     const user = {
         username: req.body.username,
@@ -19,8 +20,10 @@ export const signin = (req, res, next)=>{
         address: req.body.address,
         age: req.body.age,
         phone: req.body.codPais + req.body.codArea + req.body.number,
-        
+        password: req.user.password        
     }
+    // enviarMensajeWhatsapp(user.phone)
+    enviarCorreo(user)
     users.save(user)
     res.redirect('../')
     next()

@@ -11,6 +11,7 @@ import path from 'path'
 import passport from 'passport'
 import './config/passport.js'
 import {signin, signinPassport} from './routes/signin.js'
+import {loginPassport, login} from './routes/login.js'
 import expressSession from 'express-session'
 import MongoStore from 'connect-mongo'
 import {mongoURL, mongoSecret} from './config/enviroment.js'
@@ -68,11 +69,11 @@ rootRouter.get('/login', (req, res)=>{
     res.sendFile(filePath);
 })
 
-rootRouter.post('/login', (req, res)=>{
-    console.log(req.body)
-    
-    
-    res.redirect('../')
+rootRouter.post('/login', loginPassport, login)
+
+rootRouter.get('/logout', (req, res)=>{
+    req.session.destroy();
+    res.redirect('../login')
 })
 
 rootRouter.get('/signin', (req, res)=>{

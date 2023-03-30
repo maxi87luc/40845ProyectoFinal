@@ -2,15 +2,18 @@ import passport from 'passport'
 import { Strategy } from 'passport-local'
 import {hash, hashSync, compareSync} from 'bcrypt'
 import UsersdaoMongoDb  from '../daos/users/UsersDaoMongoDb.js'
-import SessionUser from '../model/sessionUserSchema.js'
+import {users} from '../routes/signin.js'
 
-const sessionUsers = new UsersdaoMongoDb({name: "sessionUsers", model: SessionUser})
+
+
 
 //passport login -----------------------------------------------------------
 
 
 passport.use('login', new Strategy((username, password, done) => {
-    const user = sessionUsers.getByUserName({username: username})
+    console.log("its alive")
+    console.log(username, password)
+    const user = users.getByUserName(username)
         .then((user)=>{            
             if(!user){
                 done(null, false)
@@ -33,7 +36,7 @@ passport.use('signup', new Strategy({
     },
     (username, password, done) => {
     
-    const existentUser = sessionUsers.getByUserName({username: username})
+    const existentUser = users.getByUserName(username)
         .then(user=>{
             if (user) {
                 done(new Error('User already exists'));
@@ -44,8 +47,8 @@ passport.use('signup', new Strategy({
 
 
     const user = { username, password: hashSync(password, 10) };
-    console.log({ user });
-    sessionUsers.save(user);
+   
+    
 
     done(null, user);
 }))
@@ -54,8 +57,18 @@ passport.serializeUser(function(user, done) {
     done(null, user.username);
   });
   
-  passport.deserializeUser(function(username, done) {
-    const user = sessionUsers.findOne({username: username});
-    done(null, user);
+  passport.deserializeUser( (username, done)=> {
+    
+    const fullUser = users.getByUserName(username)
+        .then(fullUser=>{
+            const user = {
+                username: fullUser.username,
+                password: fullUser.password
+            }
+            
+            
+            done(null, user);
+        })  
+        
   });
   
