@@ -42,21 +42,14 @@ class ContainerMongoDb {
             
             
                 try{       
-                    console.log("id Cart: " + idCart)
-                    console.log("id Prod: " + idProd)     
+                       
                     const productToAdd= await model.findOne({_id: idProd})
                         .then((product)=>{
-                            return product
-                            
-
-                            
+                            return product                             
                         })
-                    await this.model.updateOne({_id: idCart}, {$addToSet: {productos: productToAdd}})
+                    await this.model.updateOne({_id: idCart}, {$push: {productos: productToAdd}})
                     
-                    
-                    
-        
-                    
+                        
                 }
                 catch (err){
                     console.log(err)

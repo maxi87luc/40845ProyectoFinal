@@ -105,8 +105,12 @@ rootRouter.get('/addproduct', (req, res)=>{
 //Carrito Router------------------------------
 
 carritoRouter.get('/',(req, res)=>{
-    const filePath = path.resolve('./public/api/carritos/index.html');
-    res.sendFile(filePath);
+    carrito.getAll()
+        .then(data=>{
+            console.log(data)
+            res.render('cart', {data: data});
+        })
+    
 })
 
 
