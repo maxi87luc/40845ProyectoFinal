@@ -7,6 +7,43 @@
     <title>Document</title>
 </head>
 <body>
-    <h1><%= mensaje %></h1>
+    <h2><%= user.name %></h2>
+    
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">nombre</th>
+            <th scope="col">descripcion</th>
+            <th scope="col">imagen</th>
+            <th scope="col">precio</th>
+            <th scope="col">stock disponible</th>
+            <th scope="col"></th>
+
+          </tr>
+        </thead>
+        <tbody>
+            <% array.forEach((elemento)=> { %>
+                <tr>
+                    <td><%= elemento.name %></td>
+                    <td><%= elemento.description %></td>
+                    <td><img src="<%= elemento.description %>" alt=""> </td>
+                    <td><%= elemento.price %></td>
+                    <td><%= elemento.stock %></td>
+
+                    <td>
+                        <form action="/api/carrito/<%=cart._id%>/productos/<%=elemento._id%>" method="POST">                            
+                            <button type="submit" >Añadir al carrito</button>
+                        </form>
+                    </td>
+                </tr>
+                
+            <% }); %>
+
+         
+         
+        </tbody>
+      </table>
+
+   
 </body>
 </html>

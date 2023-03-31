@@ -3,6 +3,7 @@ import UsersDaoMongoDb from '../daos/users/UsersDaoMongoDb.js';
 import User from '../model/userSchema.js'
 import {enviarMensajeWhatsapp} from '../helpers/sendMessages.js'
 import {enviarCorreo} from '../helpers/nodemailer.js'
+import {carrito} from '../index.js'
 
 //Creo una instancia de contenedor de Productos
 export const users = new UsersDaoMongoDb({name: "productos", model: User})
@@ -25,6 +26,7 @@ export const signin = (req, res, next)=>{
     // enviarMensajeWhatsapp(user.phone)
     enviarCorreo(user)
     users.save(user)
+    carrito.save({name: user.username, productos: []})
     res.redirect('../')
     next()
 

@@ -2,10 +2,20 @@ import express from 'express';
 import mongoose from "mongoose";
 import CarritosDaoMongoDb from './daos/carritos/CarritosDaoMongoDb.js';
 import ProductosDaoMongoDb from './daos/productos/ProductosDaoMongoDb.js';
-
-import connectToDb from './config/mongoDbConfig.js';
 import Producto from './model/productSchema.js'
 import Carrito from './model/carritoSchema.js'
+
+
+//Creo una instancia de contenedor de Productos
+export const productos = new ProductosDaoMongoDb({name: "productos", model: Producto})
+
+//Creo una instancia de un carrito
+export const carrito = new CarritosDaoMongoDb({name: "carrito", model: Carrito})
+
+
+
+import connectToDb from './config/mongoDbConfig.js';
+
 import User from './model/userSchema.js'
 import path from 'path'
 import passport from 'passport'
@@ -15,8 +25,8 @@ import {loginPassport, login} from './routes/login.js'
 import expressSession from 'express-session'
 import MongoStore from 'connect-mongo'
 import {mongoURL, mongoSecret} from './config/enviroment.js'
-
-
+import {users} from './routes/signin.js'
+import {index} from './routes/index.js'
 
 const { Router } = express;
 
@@ -47,21 +57,13 @@ const carritoRouter = Router();
 const rootRouter = Router();
 
 
-//Creo una instancia de un carrito
-const carrito = new CarritosDaoMongoDb({name: "carrito", model: Carrito})
-
-//Creo una instancia de contenedor de Productos
-const productos = new ProductosDaoMongoDb({name: "productos", model: Producto})
 
 
 
 
 //Root Router --------------------------------
 
-rootRouter.get('/', (req, res)=>{
-    const filePath = path.resolve('./public/index.html');
-    res.sendFile(filePath);
-})
+rootRouter.get('/', index)
 
 rootRouter.get('/login', (req, res)=>{
 
@@ -85,6 +87,12 @@ rootRouter.get('/signin', (req, res)=>{
 
 rootRouter.post('/signin', signinPassport, signin)
 
+rootRouter.get('/addproduct', (req, res)=>{
+    const filePath = path.resolve('./public/api/addProduct/index.html');
+    res.sendFile(filePath);
+})
+
+
 
 
 
@@ -92,19 +100,19 @@ rootRouter.post('/signin', signinPassport, signin)
 //Carrito Router------------------------------
 
 carritoRouter.get('/',(req, res)=>{
-    const filePath = path.resolve('./public/apsignin.html');
+    const filePath = path.resolve('./public/api/carritos/index.html');
     res.sendFile(filePath);
 })
+
+
 
 
 //Agrega un carrito y retorna el id
 carritoRouter.post('/', (req, res) => {
     //agregar productos
-    const id = req.body.id
+    const user = req.session.
     carrito.save({name: "carrito", productos: []})
-        .then((value)=>{res.send("carrito "+ value.id +" creado con exito")})
-
-    
+        .then((value)=>{res.send("carrito "+ value.id +" creado con exito")})  
 
     res.redirect('../../')
     
@@ -117,8 +125,7 @@ carritoRouter.post('/:id_Cart/productos/:id_Prod', (req, res) => {
     const idCart = req.params.id_Cart
     const idProd = req.params.id_Prod
     carrito.add(idCart, idProd, Producto)
-        .then((data)=>res.send(data))
-
+    res.redirect('../../../../')
    
 
     
@@ -157,6 +164,11 @@ carritoRouter.delete('/all', (req, res) => {
 })
 
 //Productos Router--------------------------------------------
+productosRouter.get('/', (req, res)=>{
+    const filePath = path.resolve('./public/api/productos/index.html');
+    res.sendFile(filePath);
+})
+
 
 //Agrega un producto al listado de productos
 productosRouter.post('/', (req, res) => {
@@ -164,7 +176,10 @@ productosRouter.post('/', (req, res) => {
     const productToAdd = req.body;    
     console.log(productToAdd)
     productos.save(productToAdd)
-        .then(() => res.json("Agregado con exito"))
+        .then(() => {
+            const filePath = path.resolve('./public/api/productos/index.html');
+            res.sendFile(filePath);
+        })
 
     
     
@@ -226,3 +241,4 @@ app.use('/', rootRouter)
 const PORT = 8080;
 
 app.listen(PORT, ()=> console.log(`Listening in PORT ${PORT}`))
+

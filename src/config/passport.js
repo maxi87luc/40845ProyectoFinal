@@ -11,8 +11,7 @@ import {users} from '../routes/signin.js'
 
 
 passport.use('login', new Strategy((username, password, done) => {
-    console.log("its alive")
-    console.log(username, password)
+
     const user = users.getByUserName(username)
         .then((user)=>{            
             if(!user){

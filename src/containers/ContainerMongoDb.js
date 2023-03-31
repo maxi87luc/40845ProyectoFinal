@@ -103,6 +103,62 @@ class ContainerMongoDb {
         
                         
     }
+    async getByName(name){
+        // getById(Number): Object - Recibe un id y devuelve el objeto con ese id, o null si no está.
+     
+       let ItemToSend
+        try{
+            
+            ItemToSend  = await this.model.findOne({name: name})
+                .then((value)=> {
+                    
+                    if(value){
+                        return value
+                    } else {
+                        return null
+                    }
+                    
+                })   
+                
+            return ItemToSend
+            
+           
+           
+                     
+
+        }
+        catch (err){
+            console.log(err)
+        }
+       
+       
+
+
+        
+                        
+    }
+    async getAll(){
+        // getAll(): Object[] - Devuelve un array con los objetos presentes en el archivo.
+        let listado = []
+        
+        
+        try{
+            listado = await this.model.find()
+            
+            return listado
+                     
+
+        }
+        catch (err){
+            console.log(err)
+        }
+       
+       
+
+
+        
+                        
+    }
     async getByUserName(username){
         // getById(Number): Object - Recibe un id y devuelve el objeto con ese id, o null si no está.
      
