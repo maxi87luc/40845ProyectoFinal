@@ -30,6 +30,8 @@ import MongoStore from 'connect-mongo'
 import {mongoURL, mongoSecret} from './config/enviroment.js'
 import {users} from './routes/signin.js'
 import {index} from './routes/index.js'
+import {enviarCorreoCompra} from './helpers/nodemailer.js'
+import {enviarMensajeWhatsapp} from './helpers/sendMessages.js'
 
 
 
@@ -104,8 +106,9 @@ rootRouter.get('/addproduct', (req, res)=>{
 
 //Carrito Router------------------------------
 
-carritoRouter.get('/',(req, res)=>{
-    carrito.getAll()
+carritoRouter.get('/:id_Cart',(req, res)=>{
+    const idCart = req.params.id_Cart
+    carrito.getById(idCart)
         .then(data=>{
             console.log(data)
             res.render('cart', {data: data});
@@ -136,6 +139,30 @@ carritoRouter.post('/:id_Cart/productos/:id_Prod', (req, res) => {
     carrito.add(idCart, idProd, Producto)
     res.redirect('../../../../')
    
+
+    
+    
+})
+carritoRouter.post('/:id_Cart/finalizarcompra', (req, res) => {
+    //agregar productos
+    const idCart = req.params.id_Cart  
+    let cart = {}  
+    carrito.getById(idCart)
+        .then(data=>{     
+            cart=data       
+            enviarCorreoCompra(cart)
+            return users.getByUserName(cart.name)
+        })
+        .then(user=>{
+            console.log("index")
+            console.log(cart)
+            enviarMensajeWhatsapp(user.phone, cart)
+            carrito.emptyListById(idCart)
+        })
+            
+       
+    
+    res.redirect('../../../')
 
     
     

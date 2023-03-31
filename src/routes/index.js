@@ -14,6 +14,7 @@ export const index = (req, res)=>{
                 return users.getByUserName(req.session.username)
             .then(data=>{
                 user=data
+                console.log(user)
                 return carrito.getByName(req.session.username)
             .then(data=>{
                 cart=data

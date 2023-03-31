@@ -248,6 +248,20 @@ class ContainerMongoDb {
         
      
     }
+    async emptyListById(id){
+        // deleteAll(): void - Elimina todos los objetos presentes en el archivo.
+        try{
+            await this.model.updateOne(
+                { _id: id },
+                { $set: { productos: [] } }
+             )
+        }
+        catch (err){
+            console.log(err)
+        }
+        
+     
+    }
 };
 
 export default ContainerMongoDb;

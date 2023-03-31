@@ -23,7 +23,7 @@
         </thead>
 
         <tbody>
-            <% data[0].productos.forEach((elemento)=> { %>
+            <% data.productos.forEach((elemento)=> { %>
                 <tr>
                     <td><%= elemento.name %></td>
                     <td><%= elemento.description %></td>
@@ -35,9 +35,12 @@
                 
             <% }); %>
 
-         
+            <form action="/api/carrito/<%= data._id %>/finalizarcompra" method="POST">                                           
+                <button type="submit" >Finalizar compra</button>
+            </form>
          
         </tbody>
+        
       </table>
 
       <a href="./logout"><input type="button" value="Logout"></a>

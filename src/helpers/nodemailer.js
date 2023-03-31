@@ -35,3 +35,30 @@ export const enviarCorreo = (user) => {
       }
     });
   };
+
+  export const enviarCorreoCompra = (cart) => {
+    const mailOptions = {
+      from: mymail,
+      to: cart.name,
+      subject: `Nuevo pedido de ${cart.name}`,
+      text: `
+        
+        ${cart.name},  ha comprado:
+        ${cart.productos.map(prod=>{
+          const message = `
+            ${prod.name}  $${prod.price}
+            `
+          return message
+        })} 
+        
+      `
+    };
+  
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(`Correo electrónico enviado: ${info.response}`);
+      }
+    });
+  };
