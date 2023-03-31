@@ -1,9 +1,12 @@
+import cluster from 'cluster';
 import express from 'express';
 import mongoose from "mongoose";
 import CarritosDaoMongoDb from './daos/carritos/CarritosDaoMongoDb.js';
 import ProductosDaoMongoDb from './daos/productos/ProductosDaoMongoDb.js';
 import Producto from './model/productSchema.js'
 import Carrito from './model/carritoSchema.js'
+import os from 'os';
+
 
 
 //Creo una instancia de contenedor de Productos
@@ -27,6 +30,8 @@ import MongoStore from 'connect-mongo'
 import {mongoURL, mongoSecret} from './config/enviroment.js'
 import {users} from './routes/signin.js'
 import {index} from './routes/index.js'
+
+
 
 const { Router } = express;
 
@@ -240,5 +245,14 @@ app.use('/', rootRouter)
 
 const PORT = 8080;
 
-app.listen(PORT, ()=> console.log(`Listening in PORT ${PORT}`))
+if (cluster.isPrimary) {
+    const numCPUs = os.cpus().length;
+    for (let i = 0; i < numCPUs; i++) {
+      cluster.fork();
+    }
+  } else {
+    app.listen(PORT, ()=> console.log(`Listening in PORT ${PORT}`))
+  }
+
+
 

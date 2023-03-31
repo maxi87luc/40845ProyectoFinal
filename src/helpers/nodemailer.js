@@ -2,7 +2,7 @@
 import nodemailer from 'nodemailer'
 import {mymail, mailService, mailPassword} from '../config/enviroment.js'
 
-console.log(mymail, mailPassword)
+
 const transporter = nodemailer.createTransport({
     service: mailService,
     auth: {

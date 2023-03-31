@@ -3,7 +3,7 @@ import {mongoUri} from './enviroment.js'
 
 let isConnected = false;
 
-console.log(mongoUri)
+
 
 const connectToDb = async () => {
   if (!isConnected) {
