@@ -11,7 +11,7 @@ export const enviarMensajeWhatsapp = (phone, cart) => {
         .create({
             from: 'whatsapp:+14155238886', // Número de teléfono de Twilio en formato whatsapp:
             body: `Nuevo pedido de ${user}`, // El mensaje que se enviará
-            to: `whatsapp:+542346695615` // El número de teléfono del destinatario en formato whatsapp:
+            to: `whatsapp:+5492346695615` // El número de teléfono del destinatario en formato whatsapp:
         })
         .then(message => console.log(message))
         .catch(error => console.log(error));

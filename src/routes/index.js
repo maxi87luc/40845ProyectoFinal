@@ -13,12 +13,10 @@ export const index = (req, res)=>{
                 products = productos
                 return users.getByUserName(req.session.username)
             .then(data=>{
-                user=data
-                console.log(user)
+                user=data                
                 return carrito.getByName(req.session.username)
             .then(data=>{
-                cart=data
-                              
+                cart=data                              
                 res.render('index', {array:products , user: user, cart: cart })
                 })
             })

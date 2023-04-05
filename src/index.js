@@ -6,7 +6,7 @@ import ProductosDaoMongoDb from './daos/productos/ProductosDaoMongoDb.js';
 import Producto from './model/productSchema.js'
 import Carrito from './model/carritoSchema.js'
 import os from 'os';
-
+import log4js from 'log4js'
 
 
 //Creo una instancia de contenedor de Productos
@@ -14,7 +14,7 @@ export const productos = new ProductosDaoMongoDb({name: "productos", model: Prod
 
 //Creo una instancia de un carrito
 export const carrito = new CarritosDaoMongoDb({name: "carrito", model: Carrito})
-
+import './helpers/log4js.js'
 
 
 import connectToDb from './config/mongoDbConfig.js';
@@ -32,6 +32,7 @@ import {users} from './routes/signin.js'
 import {index} from './routes/index.js'
 import {enviarCorreoCompra} from './helpers/nodemailer.js'
 import {enviarMensajeWhatsapp} from './helpers/sendMessages.js'
+import {loadAvatar} from './routes/loadAvatar.js'
 
 
 
@@ -70,6 +71,14 @@ const rootRouter = Router();
 
 //Root Router --------------------------------
 
+app.use('*', (req, res, next)=>{
+    const { url, method } = req
+    const logger = log4js.getLogger();
+    logger.level = "info";
+    logger.info(`path: ${url}, method: ${method}`);
+    next()
+})
+
 rootRouter.get('/', index)
 
 rootRouter.get('/login', (req, res)=>{
@@ -92,12 +101,26 @@ rootRouter.get('/signin', (req, res)=>{
 })
 
 
-rootRouter.post('/signin', signinPassport, signin)
+rootRouter.post('/signin', signinPassport, signin, loadAvatar)
 
 rootRouter.get('/addproduct', (req, res)=>{
     const filePath = path.resolve('./public/api/addProduct/index.html');
     res.sendFile(filePath);
 })
+
+rootRouter.get('*', (req, res) => {
+    if(req.url==="/"){
+        res.end()
+    } else {
+        console.log(req.url)
+        const { url, method } = req
+        const logger = log4js.getLogger("warn");
+        logger.level = "warn";
+        logger.warn(`Ruta ${method} ${url} no implementada`)
+    }
+    
+    
+  })
 
 
 
