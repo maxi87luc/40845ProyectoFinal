@@ -33,8 +33,12 @@ import {index} from './routes/index.js'
 import {enviarCorreoCompra} from './helpers/nodemailer.js'
 import {enviarMensajeWhatsapp} from './helpers/sendMessages.js'
 import {loadAvatar} from './routes/loadAvatar.js'
-
-
+import {getCartById} from './routes/getCartById.js'
+import {addCart} from './routes/addCart.js'
+import {addProductToCart} from './routes/addProductToCart.js'
+import {finalizarCompra} from './routes/finalizarCompra.js'
+import {deleteProductById} from './routes/deleteProductById.js'
+import {addProduct} from './routes/addProduct.js'
 
 const { Router } = express;
 
@@ -129,93 +133,28 @@ rootRouter.get('*', (req, res) => {
 
 //Carrito Router------------------------------
 
-carritoRouter.get('/:id_Cart',(req, res)=>{
-    const idCart = req.params.id_Cart
-    carrito.getById(idCart)
-        .then(data=>{
-            console.log(data)
-            res.render('cart', {data: data});
-        })
-    
-})
-
-
-
+carritoRouter.get('/:id_Cart',getCartById)
 
 //Agrega un carrito y retorna el id
-carritoRouter.post('/', (req, res) => {
-    //agregar productos
-    const user = req.session.
-    carrito.save({name: "carrito", productos: []})
-        .then((value)=>{res.send("carrito "+ value.id +" creado con exito")})  
-
-    res.redirect('../../')
-    
-})
+carritoRouter.post('/', addCart)
 
 //agrega un producto al carrito por su id
 
-carritoRouter.post('/:id_Cart/productos/:id_Prod', (req, res) => {
-    //agregar productos
-    const idCart = req.params.id_Cart
-    const idProd = req.params.id_Prod
-    carrito.add(idCart, idProd, Producto)
-    res.redirect('../../../../')
-   
+carritoRouter.post('/:id_Cart/productos/:id_Prod', addProductToCart)
 
-    
-    
-})
-carritoRouter.post('/:id_Cart/finalizarcompra', (req, res) => {
-    //agregar productos
-    const idCart = req.params.id_Cart  
-    let cart = {}  
-    carrito.getById(idCart)
-        .then(data=>{     
-            cart=data       
-            enviarCorreoCompra(cart)
-            return users.getByUserName(cart.name)
-        })
-        .then(user=>{
-            console.log("index")
-            console.log(cart)
-            enviarMensajeWhatsapp(user.phone, cart)
-            carrito.emptyListById(idCart)
-        })
-            
-       
-    
-    res.redirect('../../../')
-
-    
-    
-})
+carritoRouter.post('/:id_Cart/finalizarcompra', finalizarCompra)
 
 //Trae un producto determinado por un id enviado por url param.
 carritoRouter.get('/:id/producto', (req, res) => {
     const id = req.params.id
-    carrito.getById(id).then((data) => res.send(data.productos))
-    
+    carrito.getById(id).then((data) => res.send(data.productos))  
    
 })
 
 
 
 //Borra un elemento segun su id de un carrito segun su id
-carritoRouter.delete('/:id_cart/producto/:id_prod', (req, res) => {
-    
-    const idCart = req.params.id_cart
-    const idProd = req.params.id_prod
-    carrito.deleteByIdbyId(idCart, idProd, Producto)
-        .then(()=>res.send("Producto "+idProd+" Borrado de carrito "+idCart))
-        
-
-    
-       
-    
-        
-
-})
+carritoRouter.delete('/:id_cart/producto/:id_prod', deleteProductById)
 
 carritoRouter.delete('/all', (req, res) => {
     carrito.deleteAll()
@@ -230,19 +169,7 @@ productosRouter.get('/', (req, res)=>{
 
 
 //Agrega un producto al listado de productos
-productosRouter.post('/', (req, res) => {
-    //agregar productos
-    const productToAdd = req.body;    
-    console.log(productToAdd)
-    productos.save(productToAdd)
-        .then(() => {
-            const filePath = path.resolve('./public/api/productos/index.html');
-            res.sendFile(filePath);
-        })
-
-    
-    
-})
+productosRouter.post('/', addProduct)
 
 //Trae un producto determinado por un id enviado por url param.
 productosRouter.get('/producto/:id', (req, res) => {
