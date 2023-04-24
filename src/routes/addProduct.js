@@ -3,6 +3,7 @@ import path from 'path'
 
 export const addProduct = (req, res) => {
     //agregar productos
+    console.log("funca")
     const productToAdd = req.body;    
     console.log(productToAdd)
     productos.save(productToAdd)

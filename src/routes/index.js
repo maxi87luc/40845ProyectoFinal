@@ -16,7 +16,8 @@ export const index = (req, res)=>{
                 user=data                
                 return carrito.getByName(req.session.username)
             .then(data=>{
-                cart=data                              
+                cart=data     
+                console.log(cart, user)                         
                 res.render('index', {array:products , user: user, cart: cart })
                 })
             })

@@ -2,34 +2,40 @@ import cluster from 'cluster';
 import express from 'express';
 import mongoose from "mongoose";
 import CarritosDaoMongoDb from './daos/carritos/CarritosDaoMongoDb.js';
+import CarritosDaoMemoria from './daos/carritos/CarritosDaoMemoria.js';
 import ProductosDaoMongoDb from './daos/productos/ProductosDaoMongoDb.js';
+import ProductosDaoMemoria from './daos/productos/ProductosDaoMemoria.js';
 import Producto from './model/productSchema.js'
 import Carrito from './model/carritoSchema.js'
 import os from 'os';
 import log4js from 'log4js'
+import {persistencia} from './config/enviroment.js'
 
 
 //Creo una instancia de contenedor de Productos
-export const productos = new ProductosDaoMongoDb({name: "productos", model: Producto})
 
-//Creo una instancia de un carrito
-export const carrito = new CarritosDaoMongoDb({name: "carrito", model: Carrito})
+export const productos = persistencia==="mongoDb"? new ProductosDaoMongoDb({name: "productos", model: Producto}): new ProductosDaoMemoria({name: "productos"});
+
+//Creo una instancia de un contenedor de carritos
+
+export const carrito = persistencia==="mongoDb"? new CarritosDaoMongoDb({name: "carrito", model: Carrito}): new CarritosDaoMemoria({name: "carrito"});
+
 import './helpers/log4js.js'
 
 
 import connectToDb from './config/mongoDbConfig.js';
 
-import User from './model/userSchema.js'
-import path from 'path'
-import passport from 'passport'
-import './config/passport.js'
-import {signin, signinPassport} from './routes/signin.js'
-import {loginPassport, login} from './routes/login.js'
-import expressSession from 'express-session'
-import MongoStore from 'connect-mongo'
-import {mongoURL, mongoSecret} from './config/enviroment.js'
-import {users} from './routes/signin.js'
-import {index} from './routes/index.js'
+import User from './model/userSchema.js';
+import path from 'path';
+import passport from 'passport';
+import './config/passport.js';
+import {signin, signinPassport} from './routes/signin.js';
+import {loginPassport, login} from './routes/login.js';
+import expressSession from 'express-session';
+import MongoStore from 'connect-mongo';
+import {mongoURL, mongoSecret} from './config/enviroment.js';
+import {users} from './routes/signin.js';
+import {index} from './routes/index.js';
 import {enviarCorreoCompra} from './helpers/nodemailer.js'
 import {enviarMensajeWhatsapp} from './helpers/sendMessages.js'
 import {loadAvatar} from './routes/loadAvatar.js'
@@ -102,17 +108,19 @@ rootRouter.get('/signin', (req, res)=>{
 
     const filePath = path.resolve('./public/signin.html');
     res.sendFile(filePath);
+
 })
 
 
 rootRouter.post('/signin', signinPassport, signin, loadAvatar)
 
 rootRouter.get('/addproduct', (req, res)=>{
-    const filePath = path.resolve('./public/api/addProduct/index.html');
+    const filePath = path.resolve('./public/api/productos/index.html');
     res.sendFile(filePath);
 })
 
 rootRouter.get('*', (req, res) => {
+
     if(req.url==="/"){
         res.end()
     } else {
@@ -123,8 +131,7 @@ rootRouter.get('*', (req, res) => {
         logger.warn(`Ruta ${method} ${url} no implementada`)
     }
     
-    
-  })
+})
 
 
 
@@ -146,6 +153,7 @@ carritoRouter.post('/:id_Cart/finalizarcompra', finalizarCompra)
 
 //Trae un producto determinado por un id enviado por url param.
 carritoRouter.get('/:id/producto', (req, res) => {
+
     const id = req.params.id
     carrito.getById(id).then((data) => res.send(data.productos))  
    

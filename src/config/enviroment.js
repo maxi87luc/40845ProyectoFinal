@@ -9,3 +9,4 @@ export const mailService = process.env.MAIL_SERVICE;
 export const mailPassword = process.env.TU_PASSWORD;
 export const accountSid = process.env.ACCOUNT_SID;
 export const authToken = process.env.AUTH_TOKEN;
+export const persistencia = process.env.PERSISTENCIA;
