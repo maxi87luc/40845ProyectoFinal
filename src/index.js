@@ -38,7 +38,7 @@ import {users} from './routes/signin.js';
 import {index} from './routes/index.js';
 import {enviarCorreoCompra} from './helpers/nodemailer.js'
 import {enviarMensajeWhatsapp} from './helpers/sendMessages.js'
-import {loadAvatar} from './routes/loadAvatar.js'
+
 import {getCartById} from './routes/getCartById.js'
 import {addCart} from './routes/addCart.js'
 import {addProductToCart} from './routes/addProductToCart.js'
@@ -112,7 +112,7 @@ rootRouter.get('/signin', (req, res)=>{
 })
 
 
-rootRouter.post('/signin', signinPassport, signin, loadAvatar)
+rootRouter.post('/signin', signinPassport, signin)
 
 rootRouter.get('/addproduct', (req, res)=>{
     const filePath = path.resolve('./public/api/productos/index.html');
@@ -231,7 +231,6 @@ app.use('/', rootRouter)
 
 
 
-
 const PORT = 8080;
 
 if (cluster.isPrimary) {
@@ -243,5 +242,9 @@ if (cluster.isPrimary) {
     app.listen(PORT, ()=> console.log(`Listening in PORT ${PORT}`))
   }
 
+
+
+
+export default app
 
 

@@ -19,7 +19,7 @@ class ContainerMemoria {
             try{            
                 
                 object._id = this.array.length + 1
-                console.log(object)
+                
                 return this.array.push(object)
     
                 
@@ -43,10 +43,7 @@ class ContainerMemoria {
                 try{       
                        
                     const CartToAdd= await this.array.filter(object=>object._id==idCart)
-                    console.log("carttoadd")
-                    console.log(CartToAdd.productos)
-                    console.log("model")
-                    console.log(array.array)
+                 
                     const ProductToAdd = await array.array.filter(object=>object._id==idProd)
                     CartToAdd[0].productos.push(ProductToAdd[0])
                     return ProductToAdd[0]
@@ -186,9 +183,19 @@ class ContainerMemoria {
         
                         
     }
-    async deleteByIdbyId(idCart, idProd, model){
+    async deleteByIdbyId(idCart, idProd, array){
         // deleteById(Number): void - Elimina del archivo el objeto con el id buscado.
         try{
+            const cart= await this.array.filter(object=>object._id==idCart)
+            
+            cart.array.filter((object)=>object._id!==idProd)
+            console.log(this.array)
+            console.log(cart.array)
+         
+            
+            return 
+
+            
             // const productToDelete = await model.findOne({id: idProd})
             //     .then((value)=>this.model.findOneAndUpdate({id: idCart}, {$pull: {productos: value}}))
             
@@ -229,10 +236,13 @@ class ContainerMemoria {
     async emptyListById(id){
         // deleteAll(): void - Elimina todos los objetos presentes en el archivo.
         try{
-            // await this.model.updateOne(
-            //     { _id: id },
-            //     { $set: { productos: [] } }
-            //  )
+
+                const cart = await this.array.filter((object)=>{
+                    object._id==id
+                })
+                console.log(cart)
+                cart.array = []
+             
         }
         catch (err){
             console.log(err)

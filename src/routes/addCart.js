@@ -5,7 +5,8 @@ export const addCart = (req, res) => {
     const user = req.session.
     carrito.save({name: "carrito", productos: []})
         .then((value)=>{res.send("carrito "+ value.id +" creado con exito")})  
+        .then(()=>res.redirect('../../'))
 
-    res.redirect('../../')
+    
     
 }

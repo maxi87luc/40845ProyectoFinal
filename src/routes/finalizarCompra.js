@@ -18,11 +18,12 @@ export const finalizarCompra = (req, res) => {
             console.log(cart)
             enviarMensajeWhatsapp(user.phone, cart)
             carrito.emptyListById(idCart)
+            res.redirect('../../../')
         })
             
        
     
-    res.redirect('../../../')
+    
 
     
     

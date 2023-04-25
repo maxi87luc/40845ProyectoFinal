@@ -43,7 +43,7 @@ class ContainerMongoDb {
             
                 try{       
                        
-                    const productToAdd= await model.findOne({_id: idProd})
+                    const productToAdd= await model.getById(idProd)
                         .then((product)=>{
                             return product                             
                         })

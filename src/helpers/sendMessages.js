@@ -4,6 +4,7 @@ import {accountSid, authToken} from '../config/enviroment.js'
 const client = twilio(accountSid, authToken);
 
 export const enviarMensajeWhatsapp = (phone, cart) => {
+    
     console.log("ws")
     console.log(phone)
     const user = cart.name

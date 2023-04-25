@@ -3,13 +3,14 @@ import path from 'path'
 
 export const addProduct = (req, res) => {
     //agregar productos
-    console.log("funca")
+    
     const productToAdd = req.body;    
     console.log(productToAdd)
     productos.save(productToAdd)
         .then(() => {
-            const filePath = path.resolve('./public/api/productos/index.html');
-            res.sendFile(filePath);
+            // const filePath = path.resolve('./public/api/productos/index.html');
+            res.status(201).json(productToAdd, null, 2)
+            // res.sendFile(filePath);
         })
 
     

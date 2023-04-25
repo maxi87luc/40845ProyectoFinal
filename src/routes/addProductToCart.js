@@ -6,7 +6,8 @@ export const addProductToCart = (req, res) => {
     const idProd = req.params.id_Prod
 
     carrito.add(idCart, idProd, productos)
+        .then(()=>res.redirect('../../../../'))
 
-    res.redirect('../../../')
+    
        
 }

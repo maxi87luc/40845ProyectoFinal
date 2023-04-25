@@ -36,7 +36,8 @@ export const signin = (req, res, next)=>{
     users.save(user)
     console.log(users)
     carrito.save({name: user.username, productos: []})
-    res.redirect('../')
+    res.status(201).json(user, null, 2)
+    
     next()
 
 }
