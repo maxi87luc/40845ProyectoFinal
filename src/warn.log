@@ -285,3 +285,9 @@
 [2023-05-02T11:44:13.246] [WARN] warn - Ruta GET /api/productos/6451213f2cf97223d66f1fce no implementada
 [2023-05-02T11:44:45.835] [WARN] warn - Ruta GET /favicon.ico no implementada
 [2023-05-02T13:24:00.954] [WARN] warn - Ruta GET /graphql no implementada
+[2023-05-02T13:24:49.443] [WARN] warn - Ruta GET /graphql no implementada
+[2023-05-02T13:24:53.640] [WARN] warn - Ruta GET /graphql no implementada
+[2023-05-02T13:25:00.288] [WARN] warn - Ruta GET /graphql no implementada
+[2023-05-02T13:48:27.194] [WARN] warn - Ruta GET /favicon.ico no implementada
+[2023-05-02T13:48:53.860] [WARN] warn - Ruta GET /favicon.ico no implementada
+[2023-05-02T13:48:57.637] [WARN] warn - Ruta GET /favicon.ico no implementada
