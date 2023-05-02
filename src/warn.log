@@ -277,3 +277,4 @@
 [2023-04-25T13:23:31.181] [WARN] warn - Ruta GET /favicon.ico no implementada
 [2023-04-25T13:23:41.892] [WARN] warn - Ruta GET /signin-error no implementada
 [2023-04-25T13:24:11.369] [WARN] warn - Ruta GET /signin-error no implementada
+[2023-04-25T13:25:20.698] [WARN] warn - Ruta GET /signin-error no implementada
