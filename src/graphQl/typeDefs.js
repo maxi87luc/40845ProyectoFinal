@@ -1,9 +1,9 @@
-module.exports.typeDefs = `#graphql
+export const typeDefs = `#graphql
   type Producto {
     name: String!
     description: String!
     code: String!
-    price: String!
+    price: Int!
     thumbnail: String!
     stock: Int!
   }
@@ -16,10 +16,10 @@ module.exports.typeDefs = `#graphql
     stock: Int!
   }
   type Query {
-    products: [Product]!
-    product(productId: id!): Product!
+    productos: [Producto]!
+    producto(productId: ID!): Producto!
   }
   type Mutation {
-    addProduct(productToAdd: ProductToAdd!): Product!
+    addProduct(productToAdd: ProductToAdd!): Producto!
   }
 `;

@@ -1,6 +1,6 @@
 
 import {productos} from '../../../index.js'
 
-module.exports.productMutations = {
+export const productMutations = {
   addProduct: async (_, { productToAdd }) => await productos.save(productToAdd),
 };

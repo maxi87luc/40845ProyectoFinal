@@ -10,6 +10,7 @@ import Carrito from './model/carritoSchema.js'
 import os from 'os';
 import log4js from 'log4js'
 import {persistencia} from './config/enviroment.js'
+import {server} from './graphQl/server.js'
 
 
 //Creo una instancia de contenedor de Productos
@@ -45,6 +46,7 @@ import {addProductToCart} from './routes/addProductToCart.js'
 import {finalizarCompra} from './routes/finalizarCompra.js'
 import {deleteProductById} from './routes/deleteProductById.js'
 import {addProduct} from './routes/addProduct.js'
+import { expressMiddleware } from '@apollo/server/express4'
 
 const { Router } = express;
 
@@ -239,7 +241,12 @@ if (cluster.isPrimary) {
       cluster.fork();
     }
   } else {
-    app.listen(PORT, ()=> console.log(`Listening in PORT ${PORT}`))
+    server.start()
+        .then(() => {
+            rootRouter.use('/graphql', expressMiddleware(server));
+            app.listen(PORT, ()=> console.log(`Listening in PORT ${PORT}`))
+  });
+    
   }
 
 

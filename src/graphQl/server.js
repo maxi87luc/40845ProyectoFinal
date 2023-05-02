@@ -1,9 +1,12 @@
 
 import { ApolloServer } from '@apollo/server';
 import {typeDefs} from './typeDefs.js'
-import { resolvers } from './resolvers'
+import {resolvers} from './resolvers/index.js'
 
-module.exports.server = new ApolloServer({
+
+ 
+
+export const server = new ApolloServer({
   typeDefs,
   resolvers,
 });

@@ -1,6 +1,6 @@
 import {productos} from '../../../index.js'
 
-module.exports.productQueries = {
-  users: async () => await productos.getAll(),
-  user: async (_, { productId }) => productos.getById(Id),
+export const productQueries = {
+  productos: async () => await productos.getAll(),
+  producto: async (_, { productId }) => productos.getById(productId),
 };

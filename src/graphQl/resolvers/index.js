@@ -1,9 +1,8 @@
 
-import { productMutations } from "./productos/mutations";
-import { productQueries } from "./productos/queries"
+import { productMutations } from "./productos/mutation.js";
+import { productQueries } from "./productos/queries.js"
 
-
-module.exports.resolvers = {
+export const  resolvers = {
   Query: {
     ...productQueries,
   },
