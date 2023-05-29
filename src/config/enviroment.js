@@ -10,4 +10,6 @@ export const mailPassword = process.env.TU_PASSWORD;
 export const accountSid = process.env.ACCOUNT_SID;
 export const authToken = process.env.AUTH_TOKEN;
 export const persistencia = process.env.PERSISTENCIA;
-export const modo = "TEST"
+export const modo = "TEST";
+export const jwtSecret = process.env.JWT_SECRET;
+export const PORT = process.env.PORT;

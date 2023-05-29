@@ -9,18 +9,15 @@
 </head>
 <body>
 
-  <form action="./api/productos" method="POST">
-    <div class="mb-3">
-      <label for="name" class="form-label">name</label>
-      <input type="text" class="form-control" id="name" name="name"aria-describedby="emailHelp">
-    </div>
+  <form action="./productos" method="POST">
+    
     <div class="mb-3">
         <label for="description" class="form-label">description</label>
         <input type="text" class="form-control" id="description" name="description" aria-describedby="emailHelp">
     </div>
     <div class="mb-3">
-        <label for="code" class="form-label">code</label>
-        <input type="text" class="form-control" id="code" name="code" aria-describedby="emailHelp">
+        <label for="code" class="form-label">category</label>
+        <input type="text" class="form-control" id="code" name="category" aria-describedby="emailHelp">
     </div>
     <div class="mb-3">
         <label for="price" class="form-label">price</label>
@@ -30,10 +27,7 @@
         <label for="thumbnail" class="form-label">thumbnail</label>
         <input type="text" class="form-control" id="thumbnail" name="thumbnail" aria-describedby="emailHelp">
     </div>
-    <div class="mb-3">
-        <label for="stock" class="form-label">stock</label>
-        <input type="number" class="form-control" id="stock" name="stock" aria-describedby="emailHelp">
-    </div>
+
 
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>

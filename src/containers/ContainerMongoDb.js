@@ -15,7 +15,7 @@ class ContainerMongoDb {
     }
 
     async save(object){
-        // save(Object): Number - Recibe un objeto, lo guarda en el archivo, devuelve el id asignado.
+        // save(Object): - Recibe un objeto, lo guarda en el archivo
         
         
             try{            
@@ -186,6 +186,40 @@ class ContainerMongoDb {
         
                         
     }
+    async getManyByUserName(username){
+        // getById(Number): Object - Recibe un id y devuelve el objeto con ese id, o null si no está.
+     
+       let ItemToSend
+        try{
+            
+            ItemToSend  = await this.model.findOne({username: username})
+                .then((value)=> {
+                    
+                    if(value){
+                        return value
+                    } else {
+                        return null
+                    }
+                    
+                })   
+                
+            return ItemToSend
+            
+           
+           
+                     
+
+        }
+        catch (err){
+            console.log(err)
+        }
+       
+       
+
+
+        
+                        
+    }
     async getAll(){
         // getAll(): Object[] - Devuelve un array con los objetos presentes en el archivo.
         let listado = []
@@ -195,6 +229,28 @@ class ContainerMongoDb {
             listado = await this.model.find()
             
             return listado
+                     
+
+        }
+        catch (err){
+            console.log(err)
+        }
+       
+       
+
+
+        
+                        
+    }
+    async count(){
+        // getAll(): Object[] - Devuelve la cantidad de items en el archivo
+        let listado = []
+        
+        
+        try{
+            listado = await this.model.find()
+            
+            return listado.length
                      
 
         }

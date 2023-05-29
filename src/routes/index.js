@@ -1,27 +1,24 @@
 import {users} from '../routes/signin.js'
-import {productos, carrito} from '../index.js'
+import {productos, carritos} from '../index.js'
 
 
-export const index = (req, res)=>{
-   
+export const index = async (req, res)=>{
+    if (req.isAuthenticated()) {
+        console.log(req.user)     
+        let products =  await productos.getAll()
+        console.log(products)
+        let user = await users.getByUserName(req.user.username)
+        console.log(user)
+        let cart = await carritos.getByName(req.user.username)
+        console.log(cart)
+                            
+        res.render('index', {array:products , user: req.user.name, cart: cart })
+    }else {
+        res.status(401).send('No estás autenticado');
+      }
+
     if(req.session && req.session.passport){ 
-        let products = []
-        let user = {}
-        let cart = {}
-        productos.getAll()
-            .then(productos=>{
-                products = productos
-                return users.getByUserName(req.session.username)
-            .then(data=>{
-                user=data                
-                return carrito.getByName(req.session.username)
-            .then(data=>{
-                cart=data     
-                console.log(cart, user)                         
-                res.render('index', {array:products , user: user, cart: cart })
-                })
-            })
-        })     
+            
    
     
     } else {

@@ -5,21 +5,36 @@ import CarritosDaoMongoDb from './daos/carritos/CarritosDaoMongoDb.js';
 import CarritosDaoMemoria from './daos/carritos/CarritosDaoMemoria.js';
 import ProductosDaoMongoDb from './daos/productos/ProductosDaoMongoDb.js';
 import ProductosDaoMemoria from './daos/productos/ProductosDaoMemoria.js';
+import OrdersDaoMongoDb from './daos/orders/OrdersDaoMongoDb.js';
+import MessagesDaoMongoDb from "./daos/messages/MessagesDaoMongoDb.js"
+import Message from "./model/messageSchema.js"
 import Producto from './model/productSchema.js'
 import Carrito from './model/carritoSchema.js'
+import Order from './model/orderSchema.js'
 import os from 'os';
 import log4js from 'log4js'
 import {persistencia} from './config/enviroment.js'
-import {server} from './graphQl/server.js'
+import http from 'http';
+import { Server } from 'socket.io';
+
+
 
 
 //Creo una instancia de contenedor de Productos
 
-export const productos = persistencia==="mongoDb"? new ProductosDaoMongoDb({name: "productos", model: Producto}): new ProductosDaoMemoria({name: "productos"});
+export const productos = new ProductosDaoMongoDb({name: "productos", model: Producto})
 
 //Creo una instancia de un contenedor de carritos
 
-export const carrito = persistencia==="mongoDb"? new CarritosDaoMongoDb({name: "carrito", model: Carrito}): new CarritosDaoMemoria({name: "carrito"});
+export const carritos = new CarritosDaoMongoDb({name: "carrito", model: Carrito})
+
+//Creo una instancia de un contenedor de ordenes
+
+export const orders = new OrdersDaoMongoDb({name: "order", model: Order})
+
+//Creo una instancia de un contenedor de mensajes
+
+export const messages = new MessagesDaoMongoDb({name: "Message", model: Message})
 
 import './helpers/log4js.js'
 
@@ -30,11 +45,11 @@ import User from './model/userSchema.js';
 import path from 'path';
 import passport from 'passport';
 import './config/passport.js';
-import {signin, signinPassport} from './routes/signin.js';
-import {loginPassport, login} from './routes/login.js';
+import {signin} from './routes/signin.js';
+import {login} from './routes/login.js';
 import expressSession from 'express-session';
 import MongoStore from 'connect-mongo';
-import {mongoURL, mongoSecret} from './config/enviroment.js';
+import {mongoURL, mongoSecret, PORT} from './config/enviroment.js';
 import {users} from './routes/signin.js';
 import {index} from './routes/index.js';
 import {enviarCorreoCompra} from './helpers/nodemailer.js'
@@ -46,7 +61,9 @@ import {addProductToCart} from './routes/addProductToCart.js'
 import {finalizarCompra} from './routes/finalizarCompra.js'
 import {deleteProductById} from './routes/deleteProductById.js'
 import {addProduct} from './routes/addProduct.js'
-import { expressMiddleware } from '@apollo/server/express4'
+import {chat} from './routes/chat.js'
+
+
 
 const { Router } = express;
 
@@ -56,9 +73,39 @@ connectToDb().then(()=>console.log("OK"))
 
 
 const app = express();
+
+
+const server = http.createServer(app);
+
+// Configura el servidor WebSocket después de crear el servidor HTTP
+export const io = new Server(server);
+
+io.on('connection',async socket => {
+    
+    
+    const mensajes = await messages.getAll()
+        
+    socket.emit('messages-update',mensajes)
+   
+       
+    socket.on('message',async data =>{
+        console.log(data)
+        await messages.save(data)
+
+        io.sockets.emit('messages-update', mensajes);
+
+
+    })
+    
+  })  
+
+
 app.use(express.urlencoded({ extended: true }));
 
 app.set('view engine', 'ejs');
+
+
+
 
 app.use(express.json())
 
@@ -71,6 +118,8 @@ app.use(expressSession({
         maxAge: 60000
     }
 }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 const productosRouter = Router();
 const carritoRouter = Router();
@@ -98,8 +147,28 @@ rootRouter.get('/login', (req, res)=>{
     const filePath = path.resolve('./public/login.html');
     res.sendFile(filePath);
 })
+rootRouter.get('/chat', chat)
 
-rootRouter.post('/login', loginPassport, login)
+
+
+rootRouter.post('/login', login)
+
+rootRouter.get('/login-error', (req, res)=>{
+
+    const filePath = path.resolve('./public/login/login-error.html');
+    
+    res.sendFile(filePath);
+
+})
+
+rootRouter.get('/signin-error', (req, res)=>{
+
+    const filePath = path.resolve('./public/signin/signin-error.html');
+    
+    res.sendFile(filePath);
+
+})
+
 
 rootRouter.get('/logout', (req, res)=>{
     req.session.destroy();
@@ -109,29 +178,28 @@ rootRouter.get('/logout', (req, res)=>{
 rootRouter.get('/signin', (req, res)=>{
 
     const filePath = path.resolve('./public/signin.html');
+  
     res.sendFile(filePath);
 
 })
 
 
-rootRouter.post('/signin', signinPassport, signin)
+rootRouter.post('/signin', signin)
 
-rootRouter.get('/addproduct', (req, res)=>{
-    const filePath = path.resolve('./public/api/productos/index.html');
-    res.sendFile(filePath);
-})
 
-rootRouter.get('*', (req, res) => {
+
+rootRouter.get('*', (req, res, next) => {
 
     if(req.url==="/"){
         res.end()
     } else {
-        console.log(req.url)
+        
         const { url, method } = req
         const logger = log4js.getLogger("warn");
         logger.level = "warn";
         logger.warn(`Ruta ${method} ${url} no implementada`)
     }
+    next()
     
 })
 
@@ -157,7 +225,7 @@ carritoRouter.post('/:id_Cart/finalizarcompra', finalizarCompra)
 carritoRouter.get('/:id/producto', (req, res) => {
 
     const id = req.params.id
-    carrito.getById(id).then((data) => res.send(data.productos))  
+    carritos.getById(id).then((data) => res.send(data.productos))  
    
 })
 
@@ -167,7 +235,7 @@ carritoRouter.get('/:id/producto', (req, res) => {
 carritoRouter.delete('/:id_cart/producto/:id_prod', deleteProductById)
 
 carritoRouter.delete('/all', (req, res) => {
-    carrito.deleteAll()
+    carritos.deleteAll()
     res.send("coleccion vacia")
 })
 
@@ -233,7 +301,7 @@ app.use('/', rootRouter)
 
 
 
-const PORT = 8080;
+
 
 if (cluster.isPrimary) {
     const numCPUs = os.cpus().length;
@@ -241,11 +309,9 @@ if (cluster.isPrimary) {
       cluster.fork();
     }
   } else {
-    server.start()
-        .then(() => {
-            rootRouter.use('/graphql', expressMiddleware(server));
-            app.listen(PORT, ()=> console.log(`Listening in PORT ${PORT}`))
-  });
+ 
+        server.listen(PORT, ()=> console.log(`Listening in PORT ${PORT}`))
+ 
     
   }
 

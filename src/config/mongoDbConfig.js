@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import {mongoUri} from './enviroment.js'
+import {mongoURL} from './enviroment.js'
 
 let isConnected = false;
 
@@ -8,7 +8,7 @@ let isConnected = false;
 const connectToDb = async () => {
   if (!isConnected) {
     console.log('Nueva conexión');
-    await mongoose.connect(mongoUri);
+    await mongoose.connect(mongoURL);
     isConnected = true;
     return;
   }
